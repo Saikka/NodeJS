@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Scoreboard</title>
+</head>
+<body>
+    <header>
+        <a href="/"><h1>Scoreboard</h1></a>
+    </header>
+    <main>
+        <% if (scores.length > 0) { %>
+            <div class="containter">
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>
+                            <form class="icon" action="/sort-scores" method="POST">
+                                <p>Score</p>
+                                <input type="hidden" name="sort" value="<%=sort%>">
+                                <button type="submit"><i class="fa fa-sort"></i></button>
+                            </form>
+                        </th>
+                    </tr>
+                    <% for (let score of scores) { %>
+                        <tr>
+                            <td><%= score.name %></td>
+                            <td><%= score.score %></td>
+                        </tr>
+                    <% } %>
+                </table>
+            </div>
+        <% } else { %>
+            <h3>No scores yet!</h3>
+        <% } %>
+        <div class="containter">
+            <% if (errorMessage) { %>
+                <div class="user-message"><%= errorMessage %></div>
+            <% } %>
+            <form action="/add-score" method="POST">
+                <div class="form-control">
+                    <label for="name">Name:</label>
+                    <input type="text" name="name" value="<%= score.name %>">
+                </div>
+                <div class="form-control">
+                    <label for="score">Score:</label>
+                    <input type="number" name="score" step="0.01"  value="<%= score.score %>">
+                </div>
+                <button class="btn" type="submit">Add</button>
+            </form>
+        </div>
+    </main>
+</body>
