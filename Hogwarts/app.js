@@ -1,14 +1,44 @@
+const path = require('path');
+
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const multer = require('multer');
 
 const newsRoutes = require('./routes/news');
 const housesRoutes = require('./routes/houses');
 const quidditchRoutes = require('./routes/quidditch');
+const authRoutes = require('./routes/auth');
+const teacherRoutes = require('./routes/teacher');
 
 const app = express();
 
+const fileStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'images');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg'
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
 app.use(bodyParser.json());
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single('image')
+);
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -23,6 +53,8 @@ app.use((req, res, next) => {
 app.use('/news', newsRoutes);
 app.use('/houses', housesRoutes);
 app.use('/quidditch', quidditchRoutes);
+app.use('/auth', authRoutes);
+app.use('/teacher', teacherRoutes);
 
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
