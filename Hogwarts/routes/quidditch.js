@@ -6,6 +6,10 @@ const router = express.Router();
 
 router.get('/', quidditchController.getMatches);
 
-router.post('/add-match', quidditchController.addMatch);
+router.post('/add', quidditchController.addMatch);
+
+router.put('/edit/:id', quidditchController.updateMatch);
+
+router.delete('/delete/:id', quidditchController.deleteMatch);
 
 module.exports = router;

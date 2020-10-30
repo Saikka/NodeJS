@@ -39,3 +39,50 @@ exports.addMatch = (req, res, next) => {
       next(err);
     });
 };
+
+exports.updateMatch = (req, res, next) => {
+  const id = req.params.id;
+  Match.findById(id)
+    .then((match) => {
+      if (!match) {
+        const error = new Error('Cound not find match!');
+        error.statusCode = 404;
+        throw error;
+      }
+      match.team1 = req.body.team1;
+      match.team2 = req.body.team2;
+      match.date = req.body.date;
+      return match.save();
+    })
+    .then((result) => {
+      res.status(200).json({ message: 'Match updated', match: result });
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
+exports.deleteMatch = (req, res, next) => {
+  const id = req.params.id;
+  Match.findById(id)
+    .then((match) => {
+      if (!match) {
+        const error = new Error('Cound not find match!');
+        error.statusCode = 404;
+        throw error;
+      }
+      return Match.findByIdAndRemove(id);
+    })
+    .then(() => {
+      res.status(200).json({ message: 'Match deleted', id: id });
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
