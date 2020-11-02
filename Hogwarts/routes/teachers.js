@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/', teachersController.getTeachers);
 
 router.post(
-  '/add-teacher',
+  '/add',
   [
     body('firstname').trim().isLength({ min: 3 }),
     body('lastname').trim().isLength({ min: 3 }),
@@ -17,5 +17,17 @@ router.post(
   ],
   teachersController.addTeacher
 );
+
+router.put(
+  '/edit/:id',
+  [
+    body('firstname').trim().isLength({ min: 3 }),
+    body('lastname').trim().isLength({ min: 3 }),
+    body('classroom').trim().isNumeric()
+  ],
+  teachersController.updateTeacher
+);
+
+router.delete('/delete/:id', teachersController.deleteTeacher);
 
 module.exports = router;
