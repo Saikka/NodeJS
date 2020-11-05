@@ -11,8 +11,7 @@ exports.login = (req, res, next) => {
         error.statusCode = 401;
         throw error;
       }
-      loadedUser = user;
-      return bcrypt.compare(req.body.password, loadedUser.password);
+      return bcrypt.compare(req.body.password, user.password);
     })
     .then((isEqual) => {
       if (!isEqual) {
@@ -20,25 +19,25 @@ exports.login = (req, res, next) => {
         error.statusCode = 401;
         throw error;
       }
+      return User.findOne({ login: req.body.login })
+        .populate('teacher')
+        .populate('student')
+        .select('-login -password');
+    })
+    .then((user) => {
       const token = jwt.sign(
         {
-          login: loadedUser.login,
-          userId: loadedUser._id.toString()
+          login: user.login,
+          userId: user._id.toString()
         },
         'secret_under_the_surface',
         { expiresIn: '1h' }
       );
-      let personId;
-      if (loadedUser.teacher) {
-        personId = loadedUser.teacher;
-      }
-      res
-        .status(200)
-        .json({
-          token: token,
-          id: loadedUser._id.toString(),
-          personId: personId
-        });
+      res.status(200).json({
+        token: token,
+        user: user,
+        expiresIn: 3600
+      });
     })
     .catch((err) => {
       if (!err.statusCode) {

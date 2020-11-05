@@ -10,6 +10,7 @@ const housesRoutes = require('./routes/houses');
 const quidditchRoutes = require('./routes/quidditch');
 const authRoutes = require('./routes/auth');
 const teachersRoutes = require('./routes/teachers');
+const studentsRoutes = require('./routes/students');
 
 const app = express();
 
@@ -55,6 +56,7 @@ app.use('/houses', housesRoutes);
 app.use('/quidditch', quidditchRoutes);
 app.use('/auth', authRoutes);
 app.use('/teachers', teachersRoutes);
+app.use('/students', studentsRoutes);
 
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
